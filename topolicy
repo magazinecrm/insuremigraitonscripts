@@ -1,0 +1,66 @@
+declare cursor c1 is
+select *  from pol_a where sn is not null order by sn ;
+mparty_id number(10);
+mname varchar2(100);
+mcompany_id number(10);
+mproduct_code varchar2(100);
+meflag varchar2(100);
+begin
+for xxx in c1
+loop
+
+begin
+	select PARTY_ID,name into MPARTY_ID,mname from party_master 
+	where UPPER(name) = upper((XXX.party)) and nvl(upper(sc),'X')  = nvl(upper(xxx.subcode),'X') AND 
+        NVL(FLAG,'X') != 'LIFE';
+ 
+exception 
+	when no_data_Found then
+		insert into mtest(name) values ('notfoundpartymasterxx'||xxx.party);
+                meflag := 'XXXNOTFOUND';  
+	when too_many_rows  then
+		insert into mtest (name) values ('toomanypartymasterxx'||xxx.party);
+		update pr set mflag = 'A' where id = xxx.id;
+                 meflag := 'XXXTOOMANYROWS'; 
+end;
+begin
+select company_id into mcompany_id from insurance_company 
+where UPPER(name) = upper((XXX.ins_co_)) ;
+
+
+end;
+
+
+begin
+select product_code into mproduct_code from product where upper(product_code) = upper(xxx.product) AND upper(company_name(company_id))=  upper(xxx.ins_co_) ;
+
+exception
+when no_data_Found then
+insert into mtest(name) values ('product_codexxnotfound'||xxx.product);
+meflag := 'XXXNTOFOUNDPRODUCT'; 
+when too_many_rows then
+insert into mtest(name) values ('product_codexxtoomanyrows'||xxx.product);
+meflag := 'XXXTOOMANYFOUNDPRODUCT'; 
+
+
+end;
+
+
+
+
+insert into policy(sno,eflag,mgroup,msubcode,endr_si,endr_prem,
+risk_add,renewal_quote,premium_total,tp,other_charge,
+surcharge,gst,premium_basic,sum_insured,vehicle_no,
+per_remark,renewal_remark,mplan,ins_company_id,party_id,
+policy_start_date,policy_end_date,dflag,policy_no,res,ins_type)
+values 
+(xxx.sn,meflag,xxx.group_,xxx.subcode,xxx.endr_si,xxx.endr_prem,
+xxx.risk_location,xxx.ren_quote,xxx.total_premium,xxx.tp,xxx.other_chg,
+xxx.surcharge,xxx.gst,xxx.total_premium,xxx.sum_ins_,xxx.VEH_NO_,
+xxx.per_remarks,xxx.ren_remarks,mproduct_code,mcompany_id,mparty_id,
+to_date(xxx.date_,'dd/mm/yyyy'),to_date(xxx.expiry,'dd/mm/yyyy'),'Y',xxx.policy_no,xxx.res,
+xxx.type);
+
+
+end loop;
+end;
