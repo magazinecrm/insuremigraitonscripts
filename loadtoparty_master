@@ -1,0 +1,16 @@
+declare cursor c1 is select * from PM200 ORDER BY SNO;
+
+begin
+for xxx in c1
+LOOP
+insert into party_master
+(sno,name,add1,city,country,
+pin,phone_mo,mgroup,sc,res,
+email,correspondence_address,policy_address,mflag)
+values
+(xxx.sno,xxx.name,xxx.ADD_,xxx.city,'INDIA',
+xxx.pin_,xxx.phone,xxx.mgroup,xxx.subcode,
+xxx.res,XXX.EMAIL,'RESIDENTIAL','RESIDENTIAL','Y');
+End loop;
+end;
+/
