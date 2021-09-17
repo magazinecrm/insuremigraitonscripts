@@ -1,0 +1,11 @@
+declare cursor c1 is 
+select * from policy where ins_Type = 'LIFE'  order by npolicy_no;
+
+BEGIN
+for xxx in c1
+loop
+
+update party_master set flag= 'LIFE' where party_id = xxx.party_id;
+end loop;
+
+END;
