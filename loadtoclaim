@@ -1,0 +1,26 @@
+declare cursor c1 is select * from
+cm_200 where eflag is null order by sn;
+
+mpolicy_no varchar2(100);
+
+begin
+for xxx in c1
+loop
+begin
+select npolicy_no into mpolicy_no from policy where 
+policy_no = xxx.policyno;
+insert into policy_claim (npolicy_no,sn,patient_name,intimation_date,insuredname,idcardno,tpa,policy_period,hospital_name,doctor_name,CHEQU_DEATAIL,claim_status)
+values (mpolicy_no,xxx.sn,xxx.patientname,to_date(xxx.indate,'dd/mm/yyyy'),xxx.insuredname,xxx.idcardno,xxx.tpa,xxx.policy_period,xxx.HOSPNAMEADD,xxx.DRNAME,xxx.CHEQUEDETAILS,xxx.claimstatus);
+
+
+exception 
+when no_data_found then
+update cm_200 set eflag = 'N' where sn   = xxx.sn;
+
+when too_many_rows then
+update cm_200 set eflag = 'M' where sn   = xxx.sn;
+commit;
+end;
+
+end loop;
+end;
