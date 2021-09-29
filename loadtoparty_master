@@ -1,16 +1,23 @@
-declare cursor c1 is select * from PM200 ORDER BY SNO;
+declare cursor c1 is select * from PM6 ORDER BY SN;
 
 begin
 for xxx in c1
 LOOP
+
 insert into party_master
-(sno,name,add1,city,country,
+(DOBC,sno,name,add1,city,country,
 pin,phone_mo,mgroup,sc,res,
-email,correspondence_address,policy_address,mflag)
+email,correspondence_address,policy_address,home,off,alt_email,
+alt_email2,pan,gstin,
+CONTACT_NAME1,CON_MO1,CONTACT_NAME2,CON_MO2,CONTACT_NAME3,COM_MO3,
+off_add1,Off_city,off_pin,mflag,whatsup)
 values
-(xxx.sno,xxx.name,xxx.ADD_,xxx.city,'INDIA',
-xxx.pin_,xxx.phone,xxx.mgroup,xxx.subcode,
-xxx.res,XXX.EMAIL,'RESIDENTIAL','RESIDENTIAL','Y');
+(XXX.DOB,xxx.sn,xxx.name,xxx.address,xxx.city,'INDIA',
+xxx.pin,xxx.phone,xxx.mgroup,xxx.subcode,xxx.res,
+XXX.EMAIL,'RESIDENTIAL','RESIDENTIAL',xxx.phhome,xxx.phoffice,xxx.altemail,
+xxx.altemail2,xxx.pan,xxx.gstin,
+xxx.CONTNAME1,xxx.CONTPHONE1,xxx.CONTNAME2,xxx.CONTPH2,xxx.CONTNAME3,xxx.CONTPH3,
+xxx.COMMADD,xxx.COMMCITY,xxx.COMMPIN,'Y',xxx.whatsup);
 End loop;
 end;
 /
