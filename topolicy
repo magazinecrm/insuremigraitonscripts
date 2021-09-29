@@ -1,5 +1,5 @@
 declare cursor c1 is
-select *  from pol_a where sn is not null order by sn ;
+select *  from pol_200 where sn is not null order by sn ;
 mparty_id number(10);
 mname varchar2(100);
 mcompany_id number(10);
@@ -11,7 +11,7 @@ loop
 
 begin
 	select PARTY_ID,name into MPARTY_ID,mname from party_master 
-	where UPPER(name) = upper((XXX.party)) and nvl(upper(sc),'X')  = nvl(upper(xxx.subcode),'X') AND 
+	where UPPER(name) = upper((XXX.party)) and nvl(upper(sc),'X')  = nvl(upper(xxx.msubcode),'X') AND 
         NVL(FLAG,'X') != 'LIFE';
  
 exception 
@@ -20,19 +20,26 @@ exception
                 meflag := 'XXXNOTFOUND';  
 	when too_many_rows  then
 		insert into mtest (name) values ('toomanypartymasterxx'||xxx.party);
-		update pr set mflag = 'A' where id = xxx.id;
+		update pol_200 set mflag = 'A' where id = xxx.id;
                  meflag := 'XXXTOOMANYROWS'; 
 end;
 begin
 select company_id into mcompany_id from insurance_company 
-where UPPER(name) = upper((XXX.ins_co_)) ;
-
+where UPPER(name) = upper((XXX.ins_co)) ;
+exception 
+when no_data_Found then
+		insert into mtest(name) values ('notfoundinscompany'||xxx.ins_co);
+                meflag := 'XXXNOTFOUND';  
+	when too_many_rows  then
+		insert into mtest (name) values ('toomanyinscompany'||xxx.ins_co);
+		update pol_200 set mflag = 'A' where id = xxx.id;
+                 meflag := 'XXXTOOMANYROWS'; 
 
 end;
 
 
 begin
-select product_code into mproduct_code from product where upper(product_code) = upper(xxx.product) AND upper(company_name(company_id))=  upper(xxx.ins_co_) ;
+select product_code into mproduct_code from product where upper(product_code) = upper(xxx.product) AND upper(company_name(company_id))=  upper(xxx.ins_co) ;
 
 exception
 when no_data_Found then
@@ -47,20 +54,26 @@ end;
 
 
 
-
-insert into policy(sno,eflag,mgroup,msubcode,endr_si,endr_prem,
+	
+insert into policy(sn,eflag,mgroup,msubcode,endr_si,endr_prem,
+entry,REFERENCE,payment_Type,CHEQ_NUMBER,mchq_date,chqamt,notes,
 risk_add,renewal_quote,premium_total,tp,other_charge,
 surcharge,gst,premium_basic,sum_insured,vehicle_no,
 per_remark,renewal_remark,mplan,ins_company_id,party_id,
-policy_start_date,policy_end_date,dflag,policy_no,res,ins_type)
+policy_start_date,policy_end_date,dflag,policy_no,res,ins_type,ins_detail,
+party_address,party_add2,contact_no)
 values 
-(xxx.sn,meflag,xxx.group_,xxx.subcode,xxx.endr_si,xxx.endr_prem,
-xxx.risk_location,xxx.ren_quote,xxx.total_premium,xxx.tp,xxx.other_chg,
-xxx.surcharge,xxx.gst,xxx.total_premium,xxx.sum_ins_,xxx.VEH_NO_,
+(xxx.sn,meflag,xxx.mgroup,xxx.msubcode,xxx.endr_si,xxx.endr_prem,
+xxx.entry,xxx.reference,xxx.pmt_mode,xxx.chqno,xxx.chqdate,xxx.chqamt,xxx.notes,
+xxx.risk_location,xxx.ren_quote,xxx.total_premium,xxx.tp,xxx.otherchg,
+xxx.surcharge,xxx.gst,xxx.bascprm,xxx.sumins,xxx.VEHNO,
 xxx.per_remarks,xxx.ren_remarks,mproduct_code,mcompany_id,mparty_id,
-to_date(xxx.date_,'dd/mm/yyyy'),to_date(xxx.expiry,'dd/mm/yyyy'),'Y',xxx.policy_no,xxx.res,
-xxx.type);
-
+to_date(xxx.dates,'dd/mm/yyyy'),to_date(xxx.expiry,'dd/mm/yyyy'),'Y',xxx.policy_no,xxx.res,
+xxx.instype,xxx.ind_detail,
+xxx.PARTY_ADDRESs,xxx.PARTY_ADD2,xxx.CONTACT_NO);
+  
+  
 
 end loop;
 end;
+
