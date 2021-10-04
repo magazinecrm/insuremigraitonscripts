@@ -57,3 +57,11 @@ update  policy set  policy_pin = replace(policy_pin,'PIN:','')
 ,policy_city = replace(policy_city,'City:','') 
 
 /
+
+
+update policy set mchq_date = null where mchq_date = '00/00/0000' ;
+update policy set cheq_dated = to_date(mchq_date,'dd/mm/yyyy') where mchq_date is not null
+/
+
+update policy set pay_number = cheq_number  where cheq_number is not null and sn is not null;
+update policy set gst_type = 'VALUE' where sno is not null;
