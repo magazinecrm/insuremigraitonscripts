@@ -1,0 +1,59 @@
+update policy set risk_add = replace(risk_add,'Location:<br>City:<br>PIN:',null) ;
+
+select substr(party_address,instr(party_address,'City:'),INSTR(party_address,'|',instr(party_address,'City:')))
+from policy;
+
+
+
+
+
+
+update policy set mdata = substr(party_address,instr(party_address,'City:'),INSTR(party_address,'|',instr(party_address,'City:')))
+
+
+/
+update policy set policy_add = substr(party_address,1,instr(party_address,'|') -1),
+policy_city =   substr(MDATA,1,instr(MDATA,'|')),
+policy_pin = substr(mdata,instr(mdata,'PIN:'),20)
+where sn is not null;
+
+
+ select substr(mdata,instr(mdata,'PIN:'),20) from policy
+/
+
+fOR PIN
+ select substr(mdata,instr(mdata,'PIN:'),20) from policy
+/
+
+
+
+fOR CITY
+select substr(MDATA,1,instr(MDATA,'|')) from policy
+/
+
+
+fOR ADDRESS
+select substr(party_address,1,instr(party_address,'|') -1)
+from policy
+
+
+
+
+
+for cdata
+update policy set cdata = substr(party_add2,instr(party_add2,'City:'),INSTR(party_add2,'|',instr(party_add2,'City:')));
+
+update policy set corr_add = substr(party_add2,1,instr(party_add2,'|') -1),
+corr_city =   substr(cdata,1,instr(MDATA,'|')),
+corr_pin = substr(cdata,instr(mdata,'PIN:'),20)
+where sn is not null;
+
+
+
+
+
+
+update  policy set  policy_pin = replace(policy_pin,'PIN:','')
+,policy_city = replace(policy_city,'City:','') 
+
+/
