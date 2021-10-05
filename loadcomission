@@ -1,0 +1,148 @@
+declare cursor c1 is select * from com_100 order by id;
+mpolicy_no number(10);
+MPARTY_ID PARTY_MASTER.PARTY_ID%TYPE;
+mname PARTY_MASTER.NAME%TYPE;
+mcompany_id number;
+mproduct_code varchar2(100);
+meflag varchar2(100);
+
+begin
+for xxx in c1
+loop
+begin
+	select PARTY_ID,name into MPARTY_ID,mname from party_master 
+	where UPPER(name) = upper((XXX.party))  AND 
+        NVL(FLAG,'X') != 'LIFE';
+ 
+exception 
+	when no_data_Found then
+		insert into mtest(name) values ('COMMnotfoundpartymasterxx'||xxx.party);
+                meflag := 'XXXNOTFOUND';  
+	when too_many_rows  then
+		insert into mtest (name) values ('COMMtoomanypartymasterxx'||xxx.party);
+		update COM_100 set meflag = 'A' where id = xxx.id;
+                 meflag := 'XXXTOOMANYROWS'; 
+end;
+begin
+select company_id into mcompany_id from insurance_company 
+where UPPER(name) = upper((XXX.insco)) ;
+exception 
+when no_data_Found then
+		insert into mtest(name) values ('COMMnotfoundinscompany'||xxx.insco);
+                meflag := 'XXXNOTFOUND';  
+	when too_many_rows  then
+		insert into mtest (name) values ('COMMtoomanyinscompany'||xxx.insco);
+		update COM_100  set meflag = 'A' where id = xxx.id;
+                 meflag := 'XXXTOOMANYROWS'; 
+
+end;
+
+
+begin
+select product_code into mproduct_code from product where upper(product_code) = upper(xxx.product) AND upper(company_name(company_id))=  upper(xxx.insco) ;
+
+exception
+when no_data_Found then
+insert into mtest(name) values ('COMMproduct_codexxnotfound'||xxx.product);
+meflag := 'XXXNTOFOUNDPRODUCT'; 
+when too_many_rows then
+insert into mtest(name) values ('product_codexxtoomanyrows'||xxx.product);
+meflag := 'COMMXXXTOOMANYFOUNDPRODUCT'; 
+
+
+end;
+
+
+
+
+begin
+select npolicy_no into mpolicy_no from policy 
+where policy_start_date =  to_date(xxx.cdate,'dd/mm/yyyy')  and 
+policy_end_date  =  to_date(xxx.enddate,'dd/mm/yyyy')
+and party_id =  MPARTY_ID
+and ins_company_id =  mcompany_id  and  
+mplan  = mproduct_code ;
+
+
+
+exception
+when no_data_Found then 
+insert into mtest(name) values ('npolicycommisson not foundd'||xxx.id);
+when too_many_rows then 
+insert into mtest(name) values ('npolicycommisson toomany'||xxx.id);
+
+end;
+
+insert into pcom(npolicy_no,policy_no,cdate,enddate,ac,inscompany_id,plan,ref,party_id,netpremium,pct,torecive,scom,sinc)
+values (mpolicy_no,xxx.pno,to_date(xxx.cdate,'dd/mm/yyyy'),to_date(xxx.enddate,'dd/mm/yyyy'),xxx.ac,mcompany_id,mproduct_code,xxx.ref,mparty_id,xxx.netpremium,xxx.pct,xxx.torecive,xxx.scom,xxx.sinc);
+/*,rcom,rinc,ctotal,baltorecive,pbal,notes)*/
+
+/*
+
+
+
+,xxx.rcom,xxx.rinc,xxx.total,xxx.baltoberecived,xxx.pbal,xxx.notes );*/
+
+end loop;
+
+end;
+
+
+
+
+Post inscomision script
+
+select  netpremium,pct,torecive,scom,sinc from pcom_100;
+
+
+alter table com_100   rename column netpremium to netpremiumt ;
+alter table com_100  add netpremium number(12,2) ;
+update com_100  set netpremium = netpremiumt;
+
+
+
+alter table com_100   rename column TORECIVE to TORECIVEt ;
+alter table com_100  add TORECIVE  number(12,2) ;
+update com_100  set TORECIVE = TORECIVET;
+
+
+
+alter table com_100   rename column SCOM to SCOMT ;
+alter table com_100  add SCOM number(12,2) ;
+update com_100  set SCOM = SCOMT;
+
+
+
+
+
+alter table com_100   rename column RCOM to RCOMT ;
+alter table com_100  add RCOM number(12,2) ;
+update com_100  set RCOM = RCOMT;
+
+
+alter table com_100   rename column SINC to SINCT ;
+alter table com_100  add SINC number(12,2) ;
+update com_100  set SINC = SINCT;
+
+alter table com_100   rename column RINC to RINCT ;
+alter table com_100  add RINC number(12,2) ;
+update com_100  set RINC = RINCT;
+
+
+alter table com_100   rename column TOTAL to TOTALT ;
+alter table com_100  add TOTAL number(12,2) ;
+update com_100  set TOTAL = TOTALT;
+
+alter table com_100   rename column BALTOBERECIVED to BALTOBERECIVEDT ;
+alter table com_100  add BALTOBERECIVED number(12,2) ;
+update com_100  set BALTOBERECIVED = BALTOBERECIVEDT;
+
+
+
+
+
+
+
+
+
+
