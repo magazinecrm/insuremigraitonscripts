@@ -73,23 +73,17 @@ insert into mtest(name) values ('npolicycommisson toomany'||xxx.id);
 
 end;
 
-insert into pcom(npolicy_no,policy_no,cdate,enddate,ac,inscompany_id,plan,ref,party_id,netpremium,pct,torecive,scom,sinc)
-values (mpolicy_no,xxx.pno,to_date(xxx.cdate,'dd/mm/yyyy'),to_date(xxx.enddate,'dd/mm/yyyy'),xxx.ac,mcompany_id,mproduct_code,xxx.ref,mparty_id,xxx.netpremium,xxx.pct,xxx.torecive,xxx.scom,xxx.sinc);
-/*,rcom,rinc,ctotal,baltorecive,pbal,notes)*/
-
-/*
-
+insert into pcom(npolicy_no,policy_no,cdate,enddate,ac,inscompany_id,plan,ref,party_id,netpremium,pct,torecive,scom,sinc,
+rcom,rinc,ctotal,baltorecive,pbal,notes)
+values (mpolicy_no,xxx.pno,to_date(xxx.cdate,'dd/mm/yyyy'),to_date(xxx.enddate,'dd/mm/yyyy'),xxx.ac,mcompany_id,mproduct_code,xxx.ref,mparty_id,xxx.netpremium,
+xxx.pct,xxx.torecive,xxx.scom,xxx.sinc,xxx.rcom,xxx.rinc,xxx.total,xxx.baltoberecived,xxx.pbal,xxx.notes);
 
 
-,xxx.rcom,xxx.rinc,xxx.total,xxx.baltoberecived,xxx.pbal,xxx.notes );*/
+
 
 end loop;
 
 end;
-
-
-
-
 Post inscomision script
 
 select  netpremium,pct,torecive,scom,sinc from pcom_100;
@@ -112,7 +106,7 @@ alter table com_100  add SCOM number(12,2) ;
 update com_100  set SCOM = SCOMT;
 
 
-
+alter table pcom modify pbal varchar2(10);
 
 
 alter table com_100   rename column RCOM to RCOMT ;
